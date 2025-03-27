@@ -4,6 +4,8 @@ import model.ElementoMultimediale;
 import model.Immagine;
 import model.RegistrazioneAudio;
 import model.Video;
+import model.interfaces.LuminositaRegolabile;
+import model.interfaces.VolumeRegolabile;
 
 import java.util.Scanner;
 
@@ -71,13 +73,91 @@ public class PlayerMultimediale {
             scelta = scanner.nextInt();
 
             if (scelta >= 1 && scelta <= 5) {
-                elementi[scelta - 1].play();
+                ElementoMultimediale elementoScelto = elementi[scelta - 1];
+                elementoScelto.play();
+                gestisciRegolazione(scanner, elementoScelto);
             } else if (scelta != 0) {
                 System.out.println("Scelta non valida!");
             }
         } while (scelta != 0);
 
         scanner.close();
+    }
+
+    private static void gestisciRegolazione(Scanner scanner, ElementoMultimediale elemento) {
+        boolean continua = true;
+
+        while (continua) {
+            System.out.println("\nOperazioni disponibili:");
+
+            boolean haVolume = elemento instanceof VolumeRegolabile;
+            boolean haLuminosita = elemento instanceof LuminositaRegolabile;
+
+            if (haVolume) {
+                System.out.println("1 - Alza volume");
+                System.out.println("2 - Abbassa volume");
+            }
+
+            if (haLuminosita) {
+                System.out.println("3 - Aumenta luminosità");
+                System.out.println("4 - Diminuisci luminosità");
+            }
+
+            System.out.println("0 - Torna al menu principale");
+
+            System.out.println("Scegli un'opzione:");
+
+            while (!scanner.hasNextInt()) {
+                System.out.println("Scelta non valida! Inserisci un numero che corrisponde ad un opzione.");
+                scanner.next();
+            }
+            int opzione = scanner.nextInt();
+
+            switch (opzione) {
+                case 0:
+                    continua = false;
+                    break;
+                case 1:
+                    if (haVolume) {
+                        ((VolumeRegolabile) elemento).alzaVolume();
+                        System.out.println("Volume alzato a: " + ((VolumeRegolabile) elemento).getVolume());
+                        elemento.play();
+                    } else {
+                        System.out.println("Questo elemento non supporta l'aumento del volume");
+                    }
+                    break;
+                case 2:
+                    if (haVolume) {
+                        ((VolumeRegolabile) elemento).abbassaVolume();
+                        System.out.println("Volume abbassato a: " + ((VolumeRegolabile) elemento).getVolume());
+                        elemento.play();
+                    } else {
+                        System.out.println("Questo elemento non supporta la diminuzione del volume");
+                    }
+                    break;
+                case 3:
+                    if (haLuminosita) {
+                        ((LuminositaRegolabile) elemento).aumentaLuminosita();
+                        System.out.println("Luminosità aumentata a: " + ((LuminositaRegolabile) elemento).getLuminosita());
+                        elemento.play();
+                    } else {
+                        System.out.println("Questo elemento non supporta l'aumento della luminosità");
+                    }
+                    break;
+                case 4:
+                    if (haLuminosita) {
+                        ((LuminositaRegolabile) elemento).diminuisciLuminosita();
+                        System.out.println("Luminosità diminuita a: " + ((LuminositaRegolabile) elemento).getLuminosita());
+                        elemento.play();
+                    } else {
+                        System.out.println("Questo elemento non supporta la diminuzione della luminosità");
+                    }
+                    break;
+                default:
+                    System.out.println("Opzione non valida!");
+                    break;
+            }
+        }
     }
 
     private static String getTipoElemento(ElementoMultimediale elemento) {
