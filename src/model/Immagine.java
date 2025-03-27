@@ -13,23 +13,29 @@ public class Immagine extends ElementoMultimediale implements LuminositaRegolabi
     }
 
     @Override
-    public void play() {
-
-    }
-
-    @Override
     public void aumentaLuminosita() {
         luminosita++;
     }
 
     @Override
     public void diminuisciLuminosita() {
-        luminosita--;
+        if (luminosita > 1) { // per evitare che la luminosità scenda sotto 1
+            luminosita--;
+        }
     }
 
     @Override
     public int getLuminosita() {
         return luminosita;
+    }
+
+    public void show() {
+        System.out.println(titolo + " " + "*".repeat(luminosita));
+    }
+
+    @Override
+    public void play() {
+        show();
     }
 
 }

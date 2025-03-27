@@ -4,4 +4,6 @@ public interface Riproducibile {
 
     void play();
 
+    int getDurata();
+
 }
